@@ -1,11 +1,24 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import LogIn from './pages/LogIn.vue'
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div>
+    <LogIn />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+div {
+  display: flex;
+  flex-direction: column;
+  padding: 0 25px;
+
+  width: 100%;
+  min-height: 100vh;
+  background-color: #8c21be;
+
+  font-family: 'Raleway', sans-serif;
+  color: white;
+}
+</style>

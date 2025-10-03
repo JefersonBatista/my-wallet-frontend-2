@@ -1,10 +1,8 @@
-<script setup lang="ts">
-import LogIn from './pages/LogIn.vue'
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div>
-    <LogIn />
+    <RouterView />
   </div>
 </template>
 

@@ -1,15 +1,22 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>
+  <div class="app">
     <RouterView />
   </div>
 </template>
 
-<style scoped>
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
 
-div {
+* {
+  box-sizing: border-box;
+
+  margin: 0;
+  padding: 0;
+}
+
+.app {
   display: flex;
   flex-direction: column;
   padding: 0 25px;

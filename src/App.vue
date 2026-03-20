@@ -1,4 +1,28 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { provide, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import type { Auth } from '@/types/model'
+
+const router = useRouter()
+
+const retrievedToken = localStorage.getItem('token')
+const token = ref(retrievedToken ?? '')
+const setAndPersistToken = (newToken: string) => {
+  token.value = newToken
+  localStorage.setItem('token', newToken)
+}
+
+provide<Auth>('auth', {
+  token: token.value,
+  setAndPersistToken,
+})
+
+if (!token.value) {
+  router.push('/sign-in')
+} else {
+  router.push('/transaction-list')
+}
+</script>
 
 <template>
   <div class="app">

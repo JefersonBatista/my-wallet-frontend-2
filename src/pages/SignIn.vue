@@ -1,11 +1,57 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+import api from '@/services/api'
+import type { Auth } from '@/types/model'
+import { inject, ref } from 'vue'
+
+const router = useRouter()
+const formData = ref({
+  email: '',
+  password: '',
+})
+
+const loading = ref(false)
+
+const { setAndPersistToken } = inject<Auth>('auth')!
+
+async function handleSubmit(event: Event) {
+  event.preventDefault()
+  loading.value = true
+
+  try {
+    const response = await api.login(formData.value)
+    const token = response.data
+    setAndPersistToken(token)
+
+    router.push('/transaction-list')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    alert(error.response.data)
+    loading.value = false
+  }
+}
+</script>
 
 <template>
   <section>
-    <form>
-      <input type="email" name="email" placeholder="E-mail" />
-      <input type="password" name="password" placeholder="Senha" />
-      <button type="submit"><span class="button-text">Entrar</span></button>
+    <form @submit="handleSubmit">
+      <input
+        v-model="formData.email"
+        type="email"
+        name="email"
+        placeholder="E-mail"
+        :disabled="loading"
+      />
+      <input
+        v-model="formData.password"
+        type="password"
+        name="password"
+        placeholder="Senha"
+        :disabled="loading"
+      />
+      <button type="submit" :disabled="loading">
+        <span class="button-text">{{ loading ? 'Entrando...' : 'Entrar' }}</span>
+      </button>
     </form>
   </section>
 </template>
@@ -66,5 +112,9 @@ button {
   color: white;
 
   cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
 }
 </style>

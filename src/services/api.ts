@@ -23,7 +23,7 @@ function logout(token: string) {
 }
 
 function getTransactions(token: string) {
-  return instance.get<Transaction[]>(`/transactions`, createAuth(token))
+  return instance.get<{ user: string; list: Transaction[] }>(`/transactions`, createAuth(token))
 }
 
 function getTransactionById(token: string, id: string) {

@@ -3,73 +3,46 @@ import TransactionItem from '@/components/TransactionItem.vue'
 import dayjs from 'dayjs'
 import plusIcon from '@/icons/plus.svg'
 import minusIcon from '@/icons/minus.svg'
+import { inject, ref } from 'vue'
+import type { Auth, Transaction } from '@/types/model'
+import api from '@/services/api'
 
-const user = 'Jeff'
+const user = ref('')
+const transactions = ref<Transaction[]>([])
 
-const transactions = [
-  {
-    _id: '68dafb6340952a4ef639ed89',
-    value: 15,
-    description: 'Bolo de pote de cenoura',
-    type: 'outgoing',
-    userId: '62026948e8476d0daf4bc06b',
-    timestamp: 1759181667000,
-  },
-  {
-    _id: '68dc76785aee08038ededc15',
-    value: 4.8,
-    description: 'Seis pães',
-    type: 'outgoing',
-    userId: '62026948e8476d0daf4bc06b',
-    timestamp: 1759278712886,
-  },
-  {
-    _id: '68dc76f55aee08038ededc16',
-    value: 15,
-    description: '1L de água de coco do Mike',
-    type: 'outgoing',
-    userId: '62026948e8476d0daf4bc06b',
-    timestamp: 1759278837107,
-  },
-  {
-    _id: '68dd7557dfc4e7368c89ab87',
-    value: 131,
-    description: 'Minha parte na parcela 1/4 da revisão do carro',
-    type: 'incoming',
-    userId: '62026948e8476d0daf4bc06b',
-    timestamp: 1759343959803,
-  },
-  {
-    _id: '68e01c23ff312bccda764e25',
-    value: 40,
-    description: 'Quatro sacolés gourmet',
-    type: 'outgoing',
-    userId: '62026948e8476d0daf4bc06b',
-    timestamp: 1759517731904,
-  },
-]
+const { token } = inject<Auth>('auth')!
 
-transactions.sort((t1, t2) => t2.timestamp - t1.timestamp)
+async function getTransactions() {
+  const response = await api.getTransactions(token)
+  user.value = response.data.user
+  transactions.value = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
+}
 
-const balance = transactions
-  .map((transaction) => {
-    if (transaction.type === 'incoming') {
-      return transaction.value
-    } else {
-      return -transaction.value
-    }
+getTransactions()
+
+function getBalance() {
+  return transactions.value
+    .map((transaction) => {
+      if (transaction.type === 'incoming') {
+        return transaction.value
+      } else {
+        return -transaction.value
+      }
+    })
+    .reduce((a, b) => a + b, 0)
+}
+
+function getBalanceStr() {
+  return getBalance()?.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   })
-  .reduce((a, b) => a + b, 0)
-
-const balanceStr = balance?.toLocaleString('pt-BR', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})
+}
 
 function balanceSignal() {
-  if (balance > 0) {
+  if (getBalance() > 0) {
     return 'positive'
-  } else if (balance < 0) {
+  } else if (getBalance() < 0) {
     return 'negative'
   } else {
     return 'neutral'
@@ -82,7 +55,7 @@ function timestampToLocalDateString(timestamp: number) {
 </script>
 
 <template>
-  <section>
+  <section v-if="user">
     <header>
       <h1>Olá, {{ user }}</h1>
     </header>
@@ -101,7 +74,7 @@ function timestampToLocalDateString(timestamp: number) {
 
       <div class="balance">
         <span class="text">Saldo</span>
-        <span :class="balanceSignal()">{{ balanceStr }}</span>
+        <span :class="balanceSignal()">{{ getBalanceStr() }}</span>
       </div>
     </div>
 
@@ -124,6 +97,10 @@ function timestampToLocalDateString(timestamp: number) {
       </button>
     </footer>
   </section>
+
+  <header v-else>
+    <h1>Carregando...</h1>
+  </header>
 </template>
 
 <style scoped>

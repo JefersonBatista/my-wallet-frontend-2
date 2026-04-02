@@ -14,8 +14,7 @@ const loading = ref(false)
 
 const { setAndPersistToken } = inject<Auth>('auth')!
 
-async function handleSubmit(event: Event) {
-  event.preventDefault()
+async function handleSubmit() {
   loading.value = true
 
   try {
@@ -27,6 +26,7 @@ async function handleSubmit(event: Event) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     alert(error.response.data)
+  } finally {
     loading.value = false
   }
 }
@@ -34,7 +34,7 @@ async function handleSubmit(event: Event) {
 
 <template>
   <section>
-    <form @submit="handleSubmit">
+    <form @submit.prevent="handleSubmit">
       <input
         v-model="formData.email"
         type="email"

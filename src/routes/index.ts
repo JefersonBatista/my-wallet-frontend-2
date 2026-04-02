@@ -7,8 +7,8 @@ import TransactionList from '@/pages/TransactionList.vue'
 const routes = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: '/', component: SignIn },
     { path: '/sign-up', component: SignUp },
-    { path: '/sign-in', component: SignIn },
     { path: '/transaction-operation', component: TransactionOperation },
     { path: '/transaction-list', component: TransactionList },
   ],

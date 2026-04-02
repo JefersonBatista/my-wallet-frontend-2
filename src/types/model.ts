@@ -1,3 +1,5 @@
+import type { Ref } from 'vue'
+
 export interface SignUpData {
   name: string
   email: string
@@ -22,6 +24,6 @@ export interface Transaction extends NewTransaction {
 }
 
 export interface Auth {
-  token: string
+  token: Ref<string>
   setAndPersistToken: (newToken: string) => void
 }

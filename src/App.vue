@@ -13,13 +13,11 @@ const setAndPersistToken = (newToken: string) => {
 }
 
 provide<Auth>('auth', {
-  token: token.value,
+  token,
   setAndPersistToken,
 })
 
-if (!token.value) {
-  router.push('/sign-in')
-} else {
+if (token.value) {
   router.push('/transaction-list')
 }
 </script>

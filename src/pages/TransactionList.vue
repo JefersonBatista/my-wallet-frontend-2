@@ -3,7 +3,7 @@ import TransactionItem from '@/components/TransactionItem.vue'
 import dayjs from 'dayjs'
 import plusIcon from '@/icons/plus.svg'
 import minusIcon from '@/icons/minus.svg'
-import { inject, ref } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import type { Auth, Transaction } from '@/types/model'
 import api from '@/services/api'
 
@@ -12,16 +12,8 @@ const transactions = ref<Transaction[]>([])
 
 const { token } = inject<Auth>('auth')!
 
-async function getTransactions() {
-  const response = await api.getTransactions(token)
-  user.value = response.data.user
-  transactions.value = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
-}
-
-getTransactions()
-
-function getBalance() {
-  return transactions.value
+const balance = computed(() =>
+  transactions.value
     .map((transaction) => {
       if (transaction.type === 'incoming') {
         return transaction.value
@@ -29,25 +21,35 @@ function getBalance() {
         return -transaction.value
       }
     })
-    .reduce((a, b) => a + b, 0)
-}
+    .reduce((a, b) => a + b, 0),
+)
 
-function getBalanceStr() {
-  return getBalance()?.toLocaleString('pt-BR', {
+const balanceStr = computed(() =>
+  balance.value.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  })
-}
+  }),
+)
 
-function balanceSignal() {
-  if (getBalance() > 0) {
+const balanceSignal = computed(() => {
+  if (balance.value > 0) {
     return 'positive'
-  } else if (getBalance() < 0) {
+  } else if (balance.value < 0) {
     return 'negative'
   } else {
     return 'neutral'
   }
-}
+})
+
+watch(
+  token,
+  async () => {
+    const response = await api.getTransactions(token.value)
+    user.value = response.data.user
+    transactions.value = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
+  },
+  { immediate: true },
+)
 
 function timestampToLocalDateString(timestamp: number) {
   return dayjs(timestamp).format('DD/MM')
@@ -74,7 +76,7 @@ function timestampToLocalDateString(timestamp: number) {
 
       <div class="balance">
         <span class="text">Saldo</span>
-        <span :class="balanceSignal()">{{ getBalanceStr() }}</span>
+        <span :class="balanceSignal">{{ balanceStr }}</span>
       </div>
     </div>
 

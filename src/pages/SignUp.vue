@@ -1,13 +1,79 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import api from '@/services/api'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const formData = ref({
+  name: '',
+  email: '',
+  password: '',
+  repeatPassword: '',
+})
+
+const loading = ref(false)
+
+async function handleSubmit() {
+  loading.value = true
+
+  if (formData.value.password !== formData.value.repeatPassword) {
+    alert('Você inseriu senhas diferentes')
+    loading.value = false
+    return
+  }
+
+  const newUserData = {
+    name: formData.value.name,
+    email: formData.value.email,
+    password: formData.value.password,
+  }
+
+  try {
+    await api.signUp(newUserData)
+    router.push('/')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    alert(error.response.data)
+  } finally {
+    loading.value = false
+  }
+}
+</script>
 
 <template>
   <section>
-    <form>
-      <input type="text" name="name" placeholder="Nome" />
-      <input type="email" name="email" placeholder="E-mail" />
-      <input type="password" name="password" placeholder="Senha" />
-      <input type="password" name="repeatPassword" placeholder="Confirme a senha" />
-      <button type="submit"><span class="button-text">Entrar</span></button>
+    <form @submit.prevent="handleSubmit">
+      <input
+        v-model="formData.name"
+        type="text"
+        name="name"
+        placeholder="Nome"
+        :disabled="loading"
+      />
+      <input
+        v-model="formData.email"
+        type="email"
+        name="email"
+        placeholder="E-mail"
+        :disabled="loading"
+      />
+      <input
+        v-model="formData.password"
+        type="password"
+        name="password"
+        placeholder="Senha"
+        :disabled="loading"
+      />
+      <input
+        v-model="formData.repeatPassword"
+        type="password"
+        name="repeatPassword"
+        placeholder="Confirme a senha"
+        :disabled="loading"
+      />
+      <button type="submit" :disabled="loading">
+        <span class="button-text">{{ loading ? 'Cadastrando...' : 'Cadastrar' }}</span>
+      </button>
     </form>
   </section>
 </template>
@@ -68,5 +134,9 @@ button {
   color: white;
 
   cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
 }
 </style>

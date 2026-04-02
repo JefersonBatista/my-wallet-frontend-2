@@ -80,7 +80,7 @@ const updateTransaction = (transaction: Transaction) =>
           :key="item._id"
           :date="timestampToLocalDateString(item.timestamp)"
           :description="item.description"
-          :value="item.value"
+          :amount="item.value"
           :type="item.type"
           :updateTransaction="() => updateTransaction(item)"
         />

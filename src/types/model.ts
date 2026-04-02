@@ -17,6 +17,10 @@ export interface NewTransaction {
   type: 'incoming' | 'outgoing'
 }
 
+export interface TransactionOperationData extends Omit<NewTransaction, 'value'> {
+  amount: number
+}
+
 export interface Transaction extends NewTransaction {
   _id: string
   timestamp: number

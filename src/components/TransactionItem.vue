@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps(['date', 'description', 'value', 'type', 'updateTransaction'])
+defineProps(['date', 'description', 'amount', 'type', 'updateTransaction'])
 </script>
 
 <template>
@@ -10,7 +10,7 @@ defineProps(['date', 'description', 'value', 'type', 'updateTransaction'])
     </span>
     <span>
       <span :class="type">
-        {{ value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+        {{ amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
       </span>
       <span class="delete"> X </span>
     </span>

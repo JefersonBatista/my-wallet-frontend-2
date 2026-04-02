@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import api from '@/services/api'
-import type { Auth, NewTransaction, TransactionOperationParams } from '@/types/model'
+import type {
+  Auth,
+  NewTransaction,
+  TransactionOperationData,
+  TransactionOperationParams,
+} from '@/types/model'
 import { computed, inject, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -9,7 +14,7 @@ const route = useRoute()
 
 const { token } = inject<Auth>('auth')!
 const { operation, type, id } = route.params as unknown as TransactionOperationParams
-const formData = ref<NewTransaction>({ value: 0, description: '', type })
+const formData = ref<TransactionOperationData>({ amount: 0, description: '', type })
 const loading = ref(true)
 const saving = ref(false)
 
@@ -51,9 +56,9 @@ watch(
 
     try {
       const response = await api.getTransactionById(token.value, id!)
-      const { value, description } = response.data
+      const { value: value, description } = response.data
       formData.value.description = description
-      formData.value.value = value
+      formData.value.amount = value
 
       loading.value = false
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,7 +75,12 @@ const handleCreation = async () => {
   saving.value = true
 
   try {
-    await api.registerTransaction(token.value, formData.value)
+    const newTransaction: NewTransaction = {
+      description: formData.value.description,
+      value: formData.value.amount,
+      type: formData.value.type,
+    }
+    await api.registerTransaction(token.value, newTransaction)
 
     router.push('/transaction-list')
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,7 +95,12 @@ const handleUpdate = async () => {
   saving.value = true
 
   try {
-    await api.updateTransaction(token.value, id!, formData.value)
+    const updatedTransaction: NewTransaction = {
+      description: formData.value.description,
+      value: formData.value.amount,
+      type: formData.value.type,
+    }
+    await api.updateTransaction(token.value, id!, updatedTransaction)
 
     router.push('/transaction-list')
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -113,11 +128,11 @@ const handleSubmit = operation === 'register' ? handleCreation : handleUpdate
 
     <form @submit.prevent="handleSubmit">
       <input
-        v-model="formData.value"
+        v-model="formData.amount"
         type="number"
         inputmode="decimal"
         step="0.01"
-        name="value"
+        name="amount"
         placeholder="Valor"
         :disabled="saving"
       />

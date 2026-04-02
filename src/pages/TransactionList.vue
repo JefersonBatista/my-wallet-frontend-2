@@ -228,7 +228,5 @@ button {
   font-weight: bold;
   font-size: 17px;
   color: white;
-
-  cursor: pointer;
 }
 </style>

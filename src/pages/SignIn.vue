@@ -110,11 +110,5 @@ button {
   font-weight: bold;
   font-size: 20px;
   color: white;
-
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: default;
 }
 </style>

@@ -38,6 +38,14 @@ if (token.value) {
   padding: 0;
 }
 
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
 .app {
   display: flex;
   flex-direction: column;

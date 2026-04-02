@@ -6,9 +6,13 @@ import minusIcon from '@/icons/minus.svg'
 import { computed, inject, ref, watch } from 'vue'
 import type { Auth, Transaction } from '@/types/model'
 import api from '@/services/api'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const user = ref('')
 const transactions = ref<Transaction[]>([])
+const loading = ref(true)
 
 const { token } = inject<Auth>('auth')!
 
@@ -47,17 +51,24 @@ watch(
     const response = await api.getTransactions(token.value)
     user.value = response.data.user
     transactions.value = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
+
+    loading.value = false
   },
   { immediate: true },
 )
 
-function timestampToLocalDateString(timestamp: number) {
-  return dayjs(timestamp).format('DD/MM')
-}
+const timestampToLocalDateString = (timestamp: number) => dayjs(timestamp).format('DD/MM')
+
+const updateTransaction = (transaction: Transaction) =>
+  router.push(`/transaction-list/edit/${transaction.type}/${transaction._id}`)
 </script>
 
 <template>
-  <section v-if="user">
+  <header v-if="loading">
+    <h1>Carregando...</h1>
+  </header>
+
+  <section v-else>
     <header>
       <h1>Olá, {{ user }}</h1>
     </header>
@@ -71,6 +82,7 @@ function timestampToLocalDateString(timestamp: number) {
           :description="item.description"
           :value="item.value"
           :type="item.type"
+          :updateTransaction="() => updateTransaction(item)"
         />
       </div>
 
@@ -81,7 +93,7 @@ function timestampToLocalDateString(timestamp: number) {
     </div>
 
     <footer>
-      <button type="button">
+      <button type="button" @click="router.push('/transaction-list/register/incoming')">
         <img :src="plusIcon" alt="entrada" />
         <span className="button-text">
           Nova
@@ -89,7 +101,7 @@ function timestampToLocalDateString(timestamp: number) {
           entrada
         </span>
       </button>
-      <button type="button">
+      <button type="button" @click="router.push('/transaction-list/register/outgoing')">
         <img :src="minusIcon" alt="saída" />
         <span className="button-text">
           Nova
@@ -99,10 +111,6 @@ function timestampToLocalDateString(timestamp: number) {
       </button>
     </footer>
   </section>
-
-  <header v-else>
-    <h1>Carregando...</h1>
-  </header>
 </template>
 
 <style scoped>

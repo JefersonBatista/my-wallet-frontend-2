@@ -27,3 +27,9 @@ export interface Auth {
   token: Ref<string>
   setAndPersistToken: (newToken: string) => void
 }
+
+export interface TransactionOperationParams {
+  operation: 'register' | 'edit'
+  type: 'incoming' | 'outgoing'
+  id?: string
+}

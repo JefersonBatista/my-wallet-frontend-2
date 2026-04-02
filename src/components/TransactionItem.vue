@@ -1,12 +1,12 @@
 <script setup lang="ts">
-defineProps(['date', 'description', 'value', 'type'])
+defineProps(['date', 'description', 'value', 'type', 'updateTransaction'])
 </script>
 
 <template>
   <article>
     <span class="date-and-description">
       <span class="date">{{ date }}</span>
-      <span class="description"> {{ description }} </span>
+      <span class="description" @click="updateTransaction"> {{ description }} </span>
     </span>
     <span>
       <span :class="type">

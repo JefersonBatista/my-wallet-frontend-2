@@ -9,8 +9,16 @@ const routes = createRouter({
   routes: [
     { path: '/', component: SignIn },
     { path: '/sign-up', component: SignUp },
-    { path: '/transaction-operation', component: TransactionOperation },
-    { path: '/transaction-list', component: TransactionList },
+    {
+      path: '/transaction-list',
+      children: [
+        {
+          path: '',
+          component: TransactionList,
+        },
+        { path: ':operation/:type/:id?', component: TransactionOperation },
+      ],
+    },
   ],
 })
 

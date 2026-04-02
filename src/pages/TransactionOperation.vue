@@ -1,23 +1,140 @@
 <script setup lang="ts">
-const formData = {
-  value: 15,
-  description: 'Bolo de pote de cenoura',
+import api from '@/services/api'
+import type { Auth, NewTransaction, TransactionOperationParams } from '@/types/model'
+import { computed, inject, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
+
+const { token } = inject<Auth>('auth')!
+const { operation, type, id } = route.params as unknown as TransactionOperationParams
+const formData = ref<NewTransaction>({ value: 0, description: '', type })
+const loading = ref(true)
+const saving = ref(false)
+
+const title = computed(() => {
+  let title = ''
+  if (operation === 'register') {
+    title += 'Nova'
+  } else {
+    title += 'Editar'
+  }
+  title += ` ${type === 'incoming' ? 'entrada' : 'saída'}`
+
+  return title
+})
+
+const submitButtonText = computed(() => {
+  let text = ''
+
+  if (operation === 'register') {
+    text += saving.value ? 'Salvando...' : 'Salvar'
+  } else {
+    text += saving.value ? 'Atualizando...' : 'Atualizar'
+  }
+
+  if (!saving.value) {
+    text += ` ${type === 'incoming' ? 'entrada' : 'saída'}`
+  }
+
+  return text
+})
+
+watch(
+  [token],
+  async () => {
+    if (operation === 'register') {
+      loading.value = false
+      return
+    }
+
+    try {
+      const response = await api.getTransactionById(token.value, id!)
+      const { value, description } = response.data
+      formData.value.description = description
+      formData.value.value = value
+
+      loading.value = false
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      alert(error.response.data)
+
+      router.push('/transaction-list')
+    }
+  },
+  { immediate: true },
+)
+
+const handleCreation = async () => {
+  saving.value = true
+
+  try {
+    await api.registerTransaction(token.value, formData.value)
+
+    router.push('/transaction-list')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    alert(error.response.data)
+  } finally {
+    saving.value = false
+  }
 }
-const title = 'Editar entrada'
+
+const handleUpdate = async () => {
+  saving.value = true
+
+  try {
+    await api.updateTransaction(token.value, id!, formData.value)
+
+    router.push('/transaction-list')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    alert(error.response.data)
+  } finally {
+    saving.value = false
+  }
+}
+
+const handleSubmit = operation === 'register' ? handleCreation : handleUpdate
 </script>
 
 <template>
-  <section>
+  <header v-if="loading">
+    <h1>Carregando...</h1>
+  </header>
+
+  <section v-else>
     <header>
-      <h1>{{ title }}</h1>
+      <h1>
+        {{ title }}
+      </h1>
     </header>
 
-    <form>
-      <input type="number" name="value" placeholder="Valor" :value="formData.value" />
-      <input type="text" name="description" placeholder="Descrição" :value="formData.description" />
+    <form @submit.prevent="handleSubmit">
+      <input
+        v-model="formData.value"
+        type="number"
+        inputmode="decimal"
+        step="0.01"
+        name="value"
+        placeholder="Valor"
+        :disabled="saving"
+      />
+      <input
+        v-model="formData.description"
+        type="text"
+        name="description"
+        placeholder="Descrição"
+        :disabled="saving"
+      />
       <div class="options">
-        <button type="submit"><span class="button-text">Salvar</span></button>
-        <button type="button"><span class="button-text">Cancelar</span></button>
+        <button type="submit" :disabled="saving">
+          <span class="button-text">{{ submitButtonText }}</span>
+        </button>
+        <button type="button" :disabled="saving" @click="router.push('/transaction-list')">
+          <span class="button-text">Cancelar</span>
+        </button>
       </div>
     </form>
   </section>

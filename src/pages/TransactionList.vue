@@ -50,9 +50,6 @@ watch(
   { immediate: true },
 )
 
-const updateTransaction = (transaction: Transaction) =>
-  router.push(`/transaction-list/edit/${transaction.type}/${transaction._id}`)
-
 const goToRegisterTransaction = (type: 'incoming' | 'outgoing') =>
   router.push(`/transaction-list/register/${type}`)
 </script>
@@ -69,15 +66,7 @@ const goToRegisterTransaction = (type: 'incoming' | 'outgoing') =>
 
     <div class="container">
       <div class="list">
-        <TransactionItem
-          v-for="item in transactions"
-          :key="item._id"
-          :timestamp="item.timestamp"
-          :description="item.description"
-          :amount="item.value"
-          :type="item.type"
-          :updateTransaction="() => updateTransaction(item)"
-        />
+        <TransactionItem v-for="item in transactions" :key="item._id" :transaction="item" />
       </div>
 
       <div class="balance">

@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
 import type { Auth } from '@/types/model'
-import { inject, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 
 const router = useRouter()
 const formData = ref({
@@ -30,6 +30,8 @@ async function handleSubmit() {
     loading.value = false
   }
 }
+
+const buttonText = computed(() => (loading.value ? 'Entrando...' : 'Entrar'))
 </script>
 
 <template>
@@ -50,7 +52,7 @@ async function handleSubmit() {
         :disabled="loading"
       />
       <button type="submit" :disabled="loading">
-        <span class="button-text">{{ loading ? 'Entrando...' : 'Entrar' }}</span>
+        <span class="button-text">{{ buttonText }}</span>
       </button>
     </form>
   </section>

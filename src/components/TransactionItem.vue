@@ -1,17 +1,17 @@
 <script setup lang="ts">
-defineProps(['date', 'description', 'amount', 'type', 'updateTransaction'])
+import { formatAmount, formatTransactionDate } from '@/utils/format'
+
+defineProps(['timestamp', 'description', 'amount', 'type', 'updateTransaction'])
 </script>
 
 <template>
   <article>
     <span class="date-and-description">
-      <span class="date">{{ date }}</span>
+      <span class="date">{{ formatTransactionDate(timestamp) }}</span>
       <span class="description" @click="updateTransaction"> {{ description }} </span>
     </span>
     <span>
-      <span :class="type">
-        {{ amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
-      </span>
+      <span :class="type">{{ formatAmount(amount) }}</span>
       <span class="delete"> X </span>
     </span>
   </article>

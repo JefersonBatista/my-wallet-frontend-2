@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/services/api'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -38,6 +38,8 @@ async function handleSubmit() {
     loading.value = false
   }
 }
+
+const buttonText = computed(() => (loading.value ? 'Cadastrando...' : 'Cadastrar'))
 </script>
 
 <template>
@@ -72,7 +74,7 @@ async function handleSubmit() {
         :disabled="loading"
       />
       <button type="submit" :disabled="loading">
-        <span class="button-text">{{ loading ? 'Cadastrando...' : 'Cadastrar' }}</span>
+        <span class="button-text">{{ buttonText }}</span>
       </button>
     </form>
   </section>

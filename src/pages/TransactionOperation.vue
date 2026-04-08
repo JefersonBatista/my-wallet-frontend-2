@@ -47,7 +47,7 @@ const submitButtonText = computed(() => {
 })
 
 watch(
-  [token],
+  token,
   async () => {
     if (operation === 'register') {
       loading.value = false

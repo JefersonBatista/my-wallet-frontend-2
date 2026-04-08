@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import TransactionItem from '@/components/TransactionItem.vue'
-import dayjs from 'dayjs'
 import plusIcon from '@/icons/plus.svg'
 import minusIcon from '@/icons/minus.svg'
 import { computed, inject, ref, watch } from 'vue'
 import type { Auth, Transaction } from '@/types/model'
 import api from '@/services/api'
 import { useRouter } from 'vue-router'
+import { formatBalance } from '@/utils/format'
 
 const router = useRouter()
 
@@ -26,13 +26,6 @@ const balance = computed(() =>
       }
     })
     .reduce((a, b) => a + b, 0),
-)
-
-const balanceStr = computed(() =>
-  balance.value.toLocaleString('pt-BR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }),
 )
 
 const balanceSignal = computed(() => {
@@ -57,10 +50,11 @@ watch(
   { immediate: true },
 )
 
-const timestampToLocalDateString = (timestamp: number) => dayjs(timestamp).format('DD/MM')
-
 const updateTransaction = (transaction: Transaction) =>
   router.push(`/transaction-list/edit/${transaction.type}/${transaction._id}`)
+
+const goToRegisterTransaction = (type: 'incoming' | 'outgoing') =>
+  router.push(`/transaction-list/register/${type}`)
 </script>
 
 <template>
@@ -78,7 +72,7 @@ const updateTransaction = (transaction: Transaction) =>
         <TransactionItem
           v-for="item in transactions"
           :key="item._id"
-          :date="timestampToLocalDateString(item.timestamp)"
+          :timestamp="item.timestamp"
           :description="item.description"
           :amount="item.value"
           :type="item.type"
@@ -88,12 +82,12 @@ const updateTransaction = (transaction: Transaction) =>
 
       <div class="balance">
         <span class="text">Saldo</span>
-        <span :class="balanceSignal">{{ balanceStr }}</span>
+        <span :class="balanceSignal">{{ formatBalance(balance) }}</span>
       </div>
     </div>
 
     <footer>
-      <button type="button" @click="router.push('/transaction-list/register/incoming')">
+      <button type="button" @click="goToRegisterTransaction('incoming')">
         <img :src="plusIcon" alt="entrada" />
         <span className="button-text">
           Nova
@@ -101,7 +95,7 @@ const updateTransaction = (transaction: Transaction) =>
           entrada
         </span>
       </button>
-      <button type="button" @click="router.push('/transaction-list/register/outgoing')">
+      <button type="button" @click="goToRegisterTransaction('outgoing')">
         <img :src="minusIcon" alt="saída" />
         <span className="button-text">
           Nova

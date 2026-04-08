@@ -37,11 +37,11 @@ const deleteTransaction = async () => {
 
 <template>
   <article>
-    <span class="date-and-description">
+    <span class="group">
       <span class="date">{{ formatTransactionDate(transaction.timestamp) }}</span>
       <span class="description" @click="updateTransaction"> {{ transaction.description }} </span>
     </span>
-    <span>
+    <span class="group">
       <span :class="transaction.type">{{ formatAmount(transaction.value) }}</span>
       <span class="delete" @click="deleteTransaction"> X </span>
     </span>
@@ -57,7 +57,7 @@ article {
   font-size: 17px;
 }
 
-.date-and-description {
+.group {
   display: flex;
   align-items: center;
 }

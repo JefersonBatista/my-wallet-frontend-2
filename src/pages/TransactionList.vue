@@ -52,6 +52,10 @@ watch(
 
 const goToRegisterTransaction = (type: 'incoming' | 'outgoing') =>
   router.push(`/transaction-list/register/${type}`)
+
+const handleDelete = (id: string) => {
+  transactions.value = transactions.value.filter((item) => item._id !== id)
+}
 </script>
 
 <template>
@@ -66,7 +70,12 @@ const goToRegisterTransaction = (type: 'incoming' | 'outgoing') =>
 
     <div class="container">
       <div class="list">
-        <TransactionItem v-for="item in transactions" :key="item._id" :transaction="item" />
+        <TransactionItem
+          v-for="item in transactions"
+          :key="item._id"
+          :transaction="item"
+          @delete="handleDelete"
+        />
       </div>
 
       <div class="balance">

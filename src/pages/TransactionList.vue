@@ -2,6 +2,7 @@
 import TransactionItem from '@/components/TransactionItem.vue'
 import plusIcon from '@/icons/plus.svg'
 import minusIcon from '@/icons/minus.svg'
+import logoutIcon from '@/icons/logout.svg'
 import { computed, inject, ref, watch } from 'vue'
 import type { Auth, Transaction } from '@/types/model'
 import api from '@/services/api'
@@ -56,6 +57,17 @@ const goToRegisterTransaction = (type: 'incoming' | 'outgoing') =>
 const handleDelete = (id: string) => {
   transactions.value = transactions.value.filter((item) => item._id !== id)
 }
+
+const logout = async () => {
+  try {
+    await api.logout(token.value)
+    localStorage.removeItem('token')
+    router.push('/')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    alert(error.response.data)
+  }
+}
 </script>
 
 <template>
@@ -66,6 +78,7 @@ const handleDelete = (id: string) => {
   <section v-else>
     <header>
       <h1>Olá, {{ user }}</h1>
+      <img class="logout" :src="logoutIcon" alt="sair" @click="logout" />
     </header>
 
     <div class="container">
@@ -220,5 +233,9 @@ button {
   font-weight: bold;
   font-size: 17px;
   color: white;
+}
+
+.logout {
+  cursor: pointer;
 }
 </style>

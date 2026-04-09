@@ -42,6 +42,10 @@ function updateTransaction(token: string, id: string, updatedTransaction: NewTra
   return instance.put(`/transactions/${id}`, updatedTransaction, createAuth(token))
 }
 
+function eraseAll(token: string) {
+  return instance.delete(`/transactions/all`, createAuth(token))
+}
+
 const api = {
   signUp,
   login,
@@ -51,6 +55,7 @@ const api = {
   registerTransaction,
   deleteTransaction,
   updateTransaction,
+  eraseAll,
 }
 
 export default api

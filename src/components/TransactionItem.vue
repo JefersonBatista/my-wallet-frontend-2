@@ -43,7 +43,7 @@ const deleteTransaction = async () => {
     </span>
     <span class="group">
       <span :class="transaction.type">{{ formatAmount(transaction.value) }}</span>
-      <span class="delete" @click="deleteTransaction"> X </span>
+      <span class="delete" title="Deletar" @click="deleteTransaction"> X </span>
     </span>
   </article>
 </template>

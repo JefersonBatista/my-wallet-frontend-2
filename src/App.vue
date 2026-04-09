@@ -24,12 +24,15 @@ if (token.value) {
 
 <template>
   <div class="app">
-    <RouterView />
+    <div class="app-container">
+      <RouterView />
+    </div>
   </div>
 </template>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Saira+Stencil+One&display=swap');
 
 * {
   box-sizing: border-box;
@@ -46,9 +49,31 @@ button:disabled {
   cursor: default;
 }
 
+a {
+  align-self: center;
+
+  font-weight: bold;
+  font-size: 15px;
+  text-decoration: none;
+  color: white;
+}
+
+a.deactive {
+  cursor: default;
+}
+
+.logo {
+  align-self: center;
+
+  font-family: 'Saira Stencil One', cursive;
+  font-size: 32px;
+  color: white;
+}
+
 .app {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 0 25px;
 
   width: 100%;
@@ -57,5 +82,12 @@ button:disabled {
 
   font-family: 'Raleway', sans-serif;
   color: white;
+}
+
+.app-container {
+  display: flex;
+  width: 100%;
+  max-width: 800px;
+  flex-direction: column;
 }
 </style>

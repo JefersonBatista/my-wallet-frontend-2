@@ -40,6 +40,8 @@ const balanceSignal = computed(() => {
   }
 })
 
+const emptyList = computed(() => transactions.value.length === 0)
+
 watch(
   token,
   async () => {
@@ -87,18 +89,25 @@ const logout = async () => {
 
 <template>
   <header v-if="loading">
-    <h1>Carregando...</h1>
+    <h1 class="loading">Carregando...</h1>
   </header>
 
   <section v-else>
     <header>
       <h1>Olá, {{ user }}</h1>
-      <img class="logout" :src="logoutIcon" alt="sair" @click="logout" />
+      <img class="logout" :src="logoutIcon" title="Sair" alt="sair" @click="logout" />
     </header>
 
     <div class="container">
       <div class="list">
+        <span v-if="emptyList" class="no-transactions-text">
+          Não há registros de
+          <br />
+          entrada ou saída
+        </span>
+
         <TransactionItem
+          v-else
           v-for="item in transactions"
           :key="item._id"
           :transaction="item"
@@ -106,7 +115,7 @@ const logout = async () => {
         />
       </div>
 
-      <div class="balance">
+      <div v-if="!emptyList" class="balance">
         <span class="text">Saldo</span>
         <span :class="balanceSignal">{{ formatBalance(balance) }}</span>
       </div>
@@ -147,8 +156,8 @@ section {
 }
 
 img {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
 }
 
 header {
@@ -164,6 +173,12 @@ h1 {
   font-weight: bold;
   font-size: 26px;
   color: white;
+}
+
+h1.loading {
+  width: 100%;
+  text-align: center;
+  font-size: 32px;
 }
 
 .container {
@@ -228,7 +243,7 @@ h1 {
 
 footer {
   display: flex;
-  gap: 15px;
+  gap: 8px;
   align-items: center;
 
   width: 100%;

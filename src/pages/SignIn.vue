@@ -32,10 +32,14 @@ async function handleSubmit() {
 }
 
 const buttonText = computed(() => (loading.value ? 'Entrando...' : 'Entrar'))
+const deactiveLink = computed(() => (loading.value ? 'deactive' : ''))
+const linkTo = computed(() => (loading.value ? '#' : '/sign-up'))
 </script>
 
 <template>
   <section>
+    <header class="logo">MyWallet</header>
+
     <form @submit.prevent="handleSubmit">
       <input
         v-model="formData.email"
@@ -55,6 +59,7 @@ const buttonText = computed(() => (loading.value ? 'Entrando...' : 'Entrar'))
         <span class="button-text">{{ buttonText }}</span>
       </button>
     </form>
+    <a :class="deactiveLink" :href="linkTo">Primeira vez? Cadastre-se!</a>
   </section>
 </template>
 

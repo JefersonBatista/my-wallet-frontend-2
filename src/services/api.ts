@@ -3,7 +3,7 @@ import axios from 'axios'
 import type { NewTransaction, SignInData, SignUpData, Transaction } from '@/types/model'
 
 const instance = axios.create({
-  baseURL: 'https://my-wallet-26nd.onrender.com',
+  baseURL: 'https://my-wallet-115120273090.southamerica-east1.run.app',
 })
 
 function createAuth(token: string) {

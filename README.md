@@ -1,48 +1,28 @@
-# my-wallet-frontend-2
+# My Wallet
 
-This template should help get you started developing with Vue 3 in Vite.
+## Description
 
-## Recommended IDE Setup
+A web app to register your financial transactions, both incomings and outgoings. This app runs upon its back-end, which is at https://github.com/JefersonBatista/my-wallet-backend-2.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Try it out now at https://my-wallet-six-omega.vercel.app.
 
-## Recommended Browser Setup
+## About
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+This app includes:
+- A basic sign up and login service
+- Register and edition of financial transactions, both incomings and outgoings
+- The final balance of the transactions
 
-## Type Support for `.vue` Imports in TS
+This app helps its users to keep finances under control.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## Next Steps
 
-## Customize configuration
+- Currently, this project has no next steps
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Technologies
 
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+The following technologies were used in the construction of the project:
+<p>
+  <img style='margin: 5px;' src='https://img.shields.io/badge/vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D'>
+  <img style='margin: 5px;' src='https://img.shields.io/badge/axios%20-%2320232a.svg?&style=for-the-badge&color=informational'>
+</p>

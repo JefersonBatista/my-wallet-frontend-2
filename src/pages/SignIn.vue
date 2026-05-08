@@ -3,6 +3,8 @@ import { useRouter } from 'vue-router'
 import api from '@/services/api'
 import type { Auth } from '@/types/model'
 import { computed, inject, ref } from 'vue'
+import openEyeIcon from '@/icons/open-eye.svg'
+import closedEyeIcon from '@/icons/closed-eye.svg'
 
 const router = useRouter()
 const formData = ref({
@@ -10,6 +12,7 @@ const formData = ref({
   password: '',
 })
 
+const showPassword = ref(false)
 const loading = ref(false)
 
 const { setAndPersistToken } = inject<Auth>('auth')!
@@ -34,6 +37,15 @@ async function handleSubmit() {
 const buttonText = computed(() => (loading.value ? 'Entrando...' : 'Entrar'))
 const deactiveLink = computed(() => (loading.value ? 'deactive' : ''))
 const linkTo = computed(() => (loading.value ? '#' : '/sign-up'))
+const passwordIconSrc = computed(() => (showPassword.value ? openEyeIcon : closedEyeIcon))
+const passwordInputTooltip = computed(() =>
+  showPassword.value ? 'Esconder senha' : 'Mostrar senha',
+)
+const passwordInputType = computed(() => (showPassword.value ? 'text' : 'password'))
+
+const toggleShowPassword = () => {
+  showPassword.value = !showPassword.value
+}
 </script>
 
 <template>
@@ -48,13 +60,22 @@ const linkTo = computed(() => (loading.value ? '#' : '/sign-up'))
         placeholder="E-mail"
         :disabled="loading"
       />
-      <input
-        v-model="formData.password"
-        type="password"
-        name="password"
-        placeholder="Senha"
-        :disabled="loading"
-      />
+      <div class="input-with-icon">
+        <input
+          v-model="formData.password"
+          :type="passwordInputType"
+          name="password"
+          placeholder="Senha"
+          :disabled="loading"
+        />
+        <img
+          class="input-icon"
+          :src="passwordIconSrc"
+          :title="passwordInputTooltip"
+          :alt="passwordInputTooltip"
+          @click="toggleShowPassword"
+        />
+      </div>
       <button type="submit" :disabled="loading">
         <span class="button-text">{{ buttonText }}</span>
       </button>
@@ -89,7 +110,8 @@ form {
 input {
   width: 100%;
   height: 58px;
-  padding: 15px;
+  padding-left: 15px;
+  padding-right: 50px;
   border-radius: 5px;
   border-style: none;
   background-color: white;
@@ -100,6 +122,21 @@ input {
 
 input::placeholder {
   font-family: 'Raleway', sans-serif;
+}
+
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 }
 
 button {

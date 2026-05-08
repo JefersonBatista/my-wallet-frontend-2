@@ -43,7 +43,7 @@ const deleteTransaction = async () => {
     </span>
     <span class="group">
       <span :class="transaction.type">{{ formatAmount(transaction.value) }}</span>
-      <span class="delete" title="Deletar" @click="deleteTransaction"> X </span>
+      <button class="delete" title="Deletar" @click="deleteTransaction">X</button>
     </span>
   </article>
 </template>
@@ -84,9 +84,15 @@ article {
   color: #c70000;
 }
 
-.delete {
+button.delete {
+  width: 20px;
+  height: 20px;
+
+  border-style: none;
+  border-radius: 50%;
+  background-color: #ffb7b7;
   margin-left: 10px;
-  color: #c6c6c6;
+  color: white;
 
   cursor: pointer;
 }

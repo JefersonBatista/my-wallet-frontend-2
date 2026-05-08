@@ -169,18 +169,6 @@ header {
   height: 78px;
 }
 
-h1 {
-  font-weight: bold;
-  font-size: 26px;
-  color: white;
-}
-
-h1.loading {
-  width: 100%;
-  text-align: center;
-  font-size: 32px;
-}
-
 .container {
   width: 100%;
   height: calc(100vh - 78px - 143px);

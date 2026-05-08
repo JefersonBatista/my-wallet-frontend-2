@@ -114,7 +114,7 @@ const goToTransactionList = () => router.push('/transaction-list')
 
 <template>
   <header v-if="loading">
-    <h1>Carregando...</h1>
+    <h1 class="loading">Carregando...</h1>
   </header>
 
   <section v-else>
@@ -165,12 +165,6 @@ header {
 
   width: 100%;
   height: 96px;
-}
-
-h1 {
-  font-weight: bold;
-  font-size: 26px;
-  color: white;
 }
 
 form {

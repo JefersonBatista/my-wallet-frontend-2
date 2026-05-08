@@ -86,7 +86,6 @@ article {
 
 .delete {
   margin-left: 10px;
-
   color: #c6c6c6;
 
   cursor: pointer;

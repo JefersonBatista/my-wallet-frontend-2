@@ -20,12 +20,8 @@ const saving = ref(false)
 
 const title = computed(() => {
   let title = ''
-  if (operation === 'register') {
-    title += 'Nova'
-  } else {
-    title += 'Editar'
-  }
-  title += ` ${type === 'incoming' ? 'entrada' : 'saída'}`
+  title += operation === 'register' ? 'Nova' : 'Editar'
+  title += type === 'incoming' ? ' entrada' : ' saída'
 
   return title
 })
@@ -40,7 +36,7 @@ const submitButtonText = computed(() => {
   }
 
   if (!saving.value) {
-    text += ` ${type === 'incoming' ? 'entrada' : 'saída'}`
+    text += type === 'incoming' ? ' entrada' : ' saída'
   }
 
   return text
@@ -56,7 +52,7 @@ watch(
 
     try {
       const response = await api.getTransactionById(token.value, id!)
-      const { value: value, description } = response.data
+      const { value, description } = response.data
       formData.value.description = description
       formData.value.amount = value
 
@@ -65,7 +61,7 @@ watch(
     } catch (error: any) {
       alert(error.response.data)
 
-      router.push('/transaction-list')
+      goToTransactionList()
     }
   },
   { immediate: true },
@@ -82,7 +78,7 @@ const handleCreation = async () => {
     }
     await api.registerTransaction(token.value, newTransaction)
 
-    router.push('/transaction-list')
+    goToTransactionList()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     alert(error.response.data)
@@ -102,7 +98,7 @@ const handleUpdate = async () => {
     }
     await api.updateTransaction(token.value, id!, updatedTransaction)
 
-    router.push('/transaction-list')
+    goToTransactionList()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     alert(error.response.data)
@@ -112,6 +108,8 @@ const handleUpdate = async () => {
 }
 
 const handleSubmit = operation === 'register' ? handleCreation : handleUpdate
+
+const goToTransactionList = () => router.push('/transaction-list')
 </script>
 
 <template>
@@ -147,7 +145,7 @@ const handleSubmit = operation === 'register' ? handleCreation : handleUpdate
         <button type="submit" :disabled="saving">
           <span class="button-text">{{ submitButtonText }}</span>
         </button>
-        <button type="button" :disabled="saving" @click="router.push('/transaction-list')">
+        <button type="button" :disabled="saving" @click="goToTransactionList">
           <span class="button-text">Cancelar</span>
         </button>
       </div>

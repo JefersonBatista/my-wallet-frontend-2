@@ -125,15 +125,18 @@ const goToTransactionList = () => router.push('/transaction-list')
     </header>
 
     <form @submit.prevent="handleSubmit">
-      <input
-        v-model="formData.amount"
-        type="number"
-        inputmode="decimal"
-        step="0.01"
-        name="amount"
-        placeholder="Valor"
-        :disabled="saving"
-      />
+      <div class="input-with-currency">
+        <span class="currency">R$</span>
+        <input
+          v-model="formData.amount"
+          type="number"
+          inputmode="decimal"
+          step="0.01"
+          name="amount"
+          placeholder="Valor"
+          :disabled="saving"
+        />
+      </div>
       <input
         v-model="formData.description"
         type="text"
@@ -193,6 +196,27 @@ input {
 
 input::placeholder {
   font-family: 'Raleway', sans-serif;
+}
+
+.input-with-currency {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-currency input {
+  padding-left: 50px;
+  padding-right: 15px;
+}
+
+span.currency {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-family: 'Raleway', sans-serif;
+  font-size: 20px;
+  color: black;
 }
 
 .options {

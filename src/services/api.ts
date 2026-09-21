@@ -22,8 +22,12 @@ function logout(token: string) {
   return instance.post(`/logout`, {}, createAuth(token))
 }
 
-function getTransactions(token: string) {
-  return instance.get<{ user: string; list: Transaction[] }>(`/transactions`, createAuth(token))
+function getTransactions(token: string, descriptionQuery?: string) {
+  const params = descriptionQuery ? { description: descriptionQuery } : {}
+  return instance.get<{ user: string; list: Transaction[] }>(`/transactions`, {
+    ...createAuth(token),
+    params,
+  })
 }
 
 function getTransactionById(token: string, id: string) {

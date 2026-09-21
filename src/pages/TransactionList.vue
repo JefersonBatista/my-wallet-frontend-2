@@ -42,6 +42,10 @@ const balanceSignal = computed(() => {
 
 const emptyList = computed(() => transactions.value.length === 0)
 
+const descriptionQuery = ref('')
+const filterLoading = ref(false)
+const filterButtonText = computed(() => (filterLoading.value ? 'Filtrando...' : 'Filtrar'))
+
 watch(
   token,
   async () => {
@@ -75,6 +79,22 @@ const eraseAll = async () => {
   }
 }
 
+const filterTransactions = async () => {
+  filterLoading.value = true
+
+  try {
+    const response = await api.getTransactions(token.value, descriptionQuery.value)
+    const newTransactions = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
+    console.log('newTransactions', newTransactions)
+    transactions.value = newTransactions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    alert(error.response.data)
+  } finally {
+    filterLoading.value = false
+  }
+}
+
 const logout = async () => {
   try {
     await api.logout(token.value)
@@ -97,6 +117,18 @@ const logout = async () => {
       <h1>Olá, {{ user }}</h1>
       <img class="logout" :src="logoutIcon" title="Sair" alt="sair" @click="logout" />
     </header>
+
+    <div class="filter">
+      <input
+        v-model="descriptionQuery"
+        type="text"
+        name="description-query"
+        placeholder="Filtrar por descrição"
+      />
+      <button type="button" :disabled="filterLoading" @click="filterTransactions">
+        <span class="button-text">{{ filterButtonText }}</span>
+      </button>
+    </div>
 
     <div class="container">
       <div class="list">
@@ -169,9 +201,48 @@ header {
   height: 78px;
 }
 
+.filter {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  margin-bottom: 10px;
+}
+
+input {
+  width: 200px;
+  height: 25px;
+  padding: 0 10px;
+  border-radius: 5px;
+  border-style: none;
+  background-color: white;
+
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+}
+
+.filter button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  width: auto;
+  height: 25px;
+
+  font-size: 15px;
+}
+
+input::placeholder {
+  font-family: 'Raleway', sans-serif;
+}
+
+.button-text {
+  align-self: center;
+}
+
 .container {
   width: 100%;
-  height: calc(100vh - 78px - 143px);
+  height: calc(100vh - 78px - 35px - 143px);
   border-radius: 5px;
   padding: 23px 12px 12px;
   background-color: white;

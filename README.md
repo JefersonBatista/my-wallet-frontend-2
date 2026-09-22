@@ -17,7 +17,7 @@ This app helps its users to keep finances under control.
 
 ## Next Steps
 
-- Currently, this project has no next steps
+- Filter transactions by description or date
 
 ## Technologies
 

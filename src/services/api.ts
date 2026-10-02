@@ -22,8 +22,18 @@ function logout(token: string) {
   return instance.post(`/logout`, {}, createAuth(token))
 }
 
-function getTransactions(token: string, descriptionQuery?: string) {
-  const params = descriptionQuery ? { description: descriptionQuery } : {}
+function getTransactions(token: string, description?: string, start?: number, end?: number) {
+  const params = new URLSearchParams()
+  if (description) {
+    params.append('description', description)
+  }
+  if (start) {
+    params.append('after', start.toString())
+  }
+  if (end) {
+    params.append('before', end.toString())
+  }
+
   return instance.get<{ user: string; list: Transaction[] }>(`/transactions`, {
     ...createAuth(token),
     params,

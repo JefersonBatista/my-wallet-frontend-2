@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import TransactionItem from '@/components/TransactionItem.vue'
+import TransactionFilter from '@/components/TransactionFilter.vue'
 import plusIcon from '@/icons/plus.svg'
 import minusIcon from '@/icons/minus.svg'
 import logoutIcon from '@/icons/logout.svg'
 // import eraserIcon from '@/icons/eraser.svg'
+import filterListIcon from '@/icons/filter-list.svg'
 import { computed, inject, ref, watch } from 'vue'
 import type { Auth, Transaction } from '@/types/model'
 import api from '@/services/api'
@@ -42,9 +44,8 @@ const balanceSignal = computed(() => {
 
 const emptyList = computed(() => transactions.value.length === 0)
 
-const descriptionQuery = ref('')
-const filterLoading = ref(false)
-const filterButtonText = computed(() => (filterLoading.value ? 'Filtrando...' : 'Filtrar'))
+const showFilterConfig = ref(false)
+const isFilterLoading = ref(false)
 
 watch(
   token,
@@ -79,20 +80,28 @@ const handleDelete = (id: string) => {
 //   }
 // }
 
-const filterTransactions = async () => {
-  filterLoading.value = true
+const filterTransactions = async (description: string, start: number, end: number) => {
+  isFilterLoading.value = true
 
   try {
-    const response = await api.getTransactions(token.value, descriptionQuery.value)
+    const response = await api.getTransactions(token.value, description, start, end)
     const newTransactions = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
-    console.log('newTransactions', newTransactions)
     transactions.value = newTransactions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     alert(error.response.data)
   } finally {
-    filterLoading.value = false
+    closeFilter()
+    isFilterLoading.value = false
   }
+}
+
+const openFilter = () => {
+  showFilterConfig.value = true
+}
+
+const closeFilter = () => {
+  showFilterConfig.value = false
 }
 
 const logout = async () => {
@@ -119,14 +128,9 @@ const logout = async () => {
     </header>
 
     <div class="filter">
-      <input
-        v-model="descriptionQuery"
-        type="text"
-        name="description-query"
-        placeholder="Filtrar por descrição"
-      />
-      <button type="button" :disabled="filterLoading" @click="filterTransactions">
-        <span class="button-text">{{ filterButtonText }}</span>
+      <button type="button" @click="openFilter">
+        <span class="button-text">Configurar filtro</span>
+        <img :src="filterListIcon" alt="filtrar" />
       </button>
     </div>
 
@@ -180,6 +184,13 @@ const logout = async () => {
       </button> -->
     </footer>
   </section>
+
+  <TransactionFilter
+    v-if="showFilterConfig"
+    :isFilterLoading="isFilterLoading"
+    :closeFilter="closeFilter"
+    @filter="filterTransactions"
+  />
 </template>
 
 <style scoped>
@@ -201,14 +212,6 @@ header {
   height: 78px;
 }
 
-.filter {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-
-  margin-bottom: 10px;
-}
-
 input {
   width: 200px;
   height: 25px;
@@ -221,6 +224,14 @@ input {
   font-size: 15px;
 }
 
+.filter {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  margin-bottom: 10px;
+}
+
 .filter button {
   display: flex;
   flex-direction: row;
@@ -230,6 +241,14 @@ input {
   height: 25px;
 
   font-size: 15px;
+}
+
+.filter img {
+  width: 20px;
+  height: 20px;
+  color: white;
+  align-self: center;
+  margin: 0 5px;
 }
 
 input::placeholder {

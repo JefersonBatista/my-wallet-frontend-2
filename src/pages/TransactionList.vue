@@ -3,7 +3,7 @@ import TransactionItem from '@/components/TransactionItem.vue'
 import plusIcon from '@/icons/plus.svg'
 import minusIcon from '@/icons/minus.svg'
 import logoutIcon from '@/icons/logout.svg'
-import eraserIcon from '@/icons/eraser.svg'
+// import eraserIcon from '@/icons/eraser.svg'
 import { computed, inject, ref, watch } from 'vue'
 import type { Auth, Transaction } from '@/types/model'
 import api from '@/services/api'
@@ -65,19 +65,19 @@ const handleDelete = (id: string) => {
   transactions.value = transactions.value.filter((item) => item._id !== id)
 }
 
-const eraseAll = async () => {
-  if (!window.confirm('Tem certeza que quer apagar todas as transações?')) {
-    return
-  }
+// const eraseAll = async () => {
+//   if (!window.confirm('Tem certeza que quer apagar todas as transações?')) {
+//     return
+//   }
 
-  try {
-    await api.eraseAll(token.value)
-    transactions.value = []
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    alert(error.response.data)
-  }
-}
+//   try {
+//     await api.eraseAll(token.value)
+//     transactions.value = []
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   } catch (error: any) {
+//     alert(error.response.data)
+//   }
+// }
 
 const filterTransactions = async () => {
   filterLoading.value = true
@@ -170,14 +170,14 @@ const logout = async () => {
           saída
         </span>
       </button>
-      <button type="button" @click="eraseAll">
+      <!-- <button type="button" @click="eraseAll">
         <img :src="eraserIcon" alt="apagar-tudo" />
         <span className="button-text">
           Apagar
           <br />
           tudo
         </span>
-      </button>
+      </button> -->
     </footer>
   </section>
 </template>

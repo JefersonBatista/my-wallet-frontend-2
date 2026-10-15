@@ -89,7 +89,7 @@ a.deactive {
   padding: 0 25px;
 
   width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: #8c21be;
 
   font-family: 'Raleway', sans-serif;

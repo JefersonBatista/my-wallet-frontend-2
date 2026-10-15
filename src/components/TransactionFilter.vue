@@ -29,13 +29,15 @@ const emit = defineEmits<{
       />
       <input v-model="start" type="number" name="start-date" placeholder="Data inicial" />
       <input v-model="end" type="number" name="end-date" placeholder="Data final" />
-      <button type="button" @click="emit('filter', description, start, end)">
-        <span class="button-text">{{ filterButtonText }}</span>
-        <img :src="filterListIcon" alt="filtrar" />
-      </button>
-      <button type="button" @click="closeFilter">
-        <span class="button-text">Cancelar</span>
-      </button>
+      <div class="options">
+        <button type="button" @click="emit('filter', description, start, end)">
+          <span class="button-text">{{ filterButtonText }}</span>
+          <img :src="filterListIcon" alt="filtrar" />
+        </button>
+        <button type="button" @click="closeFilter">
+          <span class="button-text">Cancelar</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -47,8 +49,8 @@ const emit = defineEmits<{
   left: 50%;
   transform: translate(-50%, -50%);
 
-  width: 100vw;
-  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
 
   background-color: rgba(0, 0, 0, 0.8);
 }
@@ -59,8 +61,10 @@ const emit = defineEmits<{
   left: 50%;
   transform: translate(-50%, -50%);
 
-  height: 80vh;
-  width: 80vw;
+  height: 80dvh;
+  width: 80dvw;
+  border-radius: 20px;
+  padding: 15px;
 
   display: flex;
   flex-direction: column;
@@ -68,11 +72,60 @@ const emit = defineEmits<{
   justify-content: center;
   gap: 5px;
 
-  background-color: green;
+  background-color: #8c21be;
 }
 
 img {
   width: 30px;
   height: 30px;
+}
+
+input {
+  width: 100%;
+  max-width: 400px;
+  height: 58px;
+  padding: 15px;
+  border-radius: 5px;
+  border-style: none;
+  background-color: white;
+
+  font-family: 'Raleway', sans-serif;
+  font-size: 20px;
+}
+
+input::placeholder {
+  font-family: 'Raleway', sans-serif;
+}
+
+button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 15px;
+
+  width: 150px;
+  height: auto;
+  padding: 10px;
+  border-radius: 5px;
+  border-style: none;
+  background-color: #a328d6;
+
+  font-weight: bold;
+  font-size: 20px;
+  color: white;
+}
+
+.button-text {
+  align-self: center;
+}
+
+.options {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 15px;
+
+  margin: 20px;
+  width: 100%;
 }
 </style>

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import dayjs from 'dayjs'
 
 import type { NewTransaction, SignInData, SignUpData, Transaction } from '@/types/model'
 
@@ -28,10 +29,10 @@ function getTransactions(token: string, description?: string, start?: number, en
     params.append('description', description)
   }
   if (start) {
-    params.append('after', start.toString())
+    params.append('after', String(dayjs(start, 'YYYY-MM-DD').unix() * 1000))
   }
   if (end) {
-    params.append('before', end.toString())
+    params.append('before', String(dayjs(end, 'YYYY-MM-DD').unix() * 1000))
   }
 
   return instance.get<{ user: string; list: Transaction[] }>(`/transactions`, {

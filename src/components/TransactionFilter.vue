@@ -27,8 +27,8 @@ const emit = defineEmits<{
         name="description-query"
         placeholder="Filtrar por descrição"
       />
-      <input v-model="start" type="number" name="start-date" placeholder="Data inicial" />
-      <input v-model="end" type="number" name="end-date" placeholder="Data final" />
+      <input v-model="start" type="date" name="start-date" placeholder="Data inicial" />
+      <input v-model="end" type="date" name="end-date" placeholder="Data final" />
       <div class="options">
         <button type="button" @click="emit('filter', description, start, end)">
           <span class="button-text">{{ filterButtonText }}</span>

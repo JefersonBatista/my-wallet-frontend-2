@@ -4,7 +4,7 @@ import TransactionFilter from '@/components/TransactionFilter.vue'
 import plusIcon from '@/icons/plus.svg'
 import minusIcon from '@/icons/minus.svg'
 import logoutIcon from '@/icons/logout.svg'
-// import eraserIcon from '@/icons/eraser.svg'
+import eraserIcon from '@/icons/eraser.svg'
 import filterListIcon from '@/icons/filter-list.svg'
 import { computed, inject, ref, watch } from 'vue'
 import type { Auth, Transaction } from '@/types/model'
@@ -80,7 +80,7 @@ const handleDelete = (id: string) => {
 //   }
 // }
 
-const filterTransactions = async (description: string, start: number, end: number) => {
+const filterTransactions = async (description: string, start: string, end: string) => {
   isFilterLoading.value = true
 
   try {
@@ -93,6 +93,22 @@ const filterTransactions = async (description: string, start: number, end: numbe
   } finally {
     closeFilter()
     isFilterLoading.value = false
+  }
+}
+
+const clearFilter = async () => {
+  loading.value = true
+
+  try {
+    const response = await api.getTransactions(token.value)
+    const newTransactions = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
+    transactions.value = newTransactions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    alert(error.response.data)
+  } finally {
+    closeFilter()
+    loading.value = false
   }
 }
 
@@ -131,6 +147,10 @@ const logout = async () => {
       <button type="button" @click="openFilter">
         <span class="button-text">Configurar filtro</span>
         <img :src="filterListIcon" alt="filtrar" />
+      </button>
+      <button type="button" @click="clearFilter">
+        <span class="button-text">Limpar filtro</span>
+        <img :src="eraserIcon" alt="limpar-filtro" />
       </button>
     </div>
 

@@ -12,4 +12,5 @@ export const formatAmount = (amount: number): string =>
     maximumFractionDigits: 2,
   }).format(amount)
 
-export const formatTransactionDate = (timestamp: number): string => dayjs(timestamp).format('DD/MM')
+export const formatTransactionDate = (timestamp: number): string =>
+  dayjs(timestamp).format('DD/MM/YY')

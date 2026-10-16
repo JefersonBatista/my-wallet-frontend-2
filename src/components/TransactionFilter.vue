@@ -3,8 +3,8 @@ import { computed, ref } from 'vue'
 import filterListIcon from '@/icons/filter-list.svg'
 
 const description = ref('')
-const start = ref(-1)
-const end = ref(-1)
+const start = ref('')
+const end = ref('')
 
 const { isFilterLoading, closeFilter } = defineProps<{
   isFilterLoading: boolean
@@ -14,23 +14,29 @@ const { isFilterLoading, closeFilter } = defineProps<{
 const filterButtonText = computed(() => (isFilterLoading ? 'Filtrando...' : 'Filtrar'))
 
 const emit = defineEmits<{
-  filter: [description: string, start: number, end: number]
+  filter: [description: string, start: string, end: string]
 }>()
+
+const onSubmit = () => {
+  emit('filter', description.value, start.value, end.value)
+}
 </script>
 
 <template>
   <div class="filter-background">
-    <div class="filter-container">
+    <form class="filter-container" @submit.prevent="onSubmit">
       <input
         v-model="description"
         type="text"
         name="description-query"
         placeholder="Filtrar por descrição"
       />
+      <label for="start-date">Data inicial:</label>
       <input v-model="start" type="date" name="start-date" placeholder="Data inicial" />
+      <label for="end-date">Data final:</label>
       <input v-model="end" type="date" name="end-date" placeholder="Data final" />
       <div class="options">
-        <button type="button" @click="emit('filter', description, start, end)">
+        <button type="submit" :disabled="isFilterLoading">
           <span class="button-text">{{ filterButtonText }}</span>
           <img :src="filterListIcon" alt="filtrar" />
         </button>
@@ -38,7 +44,7 @@ const emit = defineEmits<{
           <span class="button-text">Cancelar</span>
         </button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 

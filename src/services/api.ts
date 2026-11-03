@@ -13,6 +13,20 @@ const getEndParam = (end: string) => {
   return String(dayjs(end, 'YYYY-MM-DD').unix() * 1000 + dayInMs)
 }
 
+const getParams = (description?: string, start?: string, end?: string) => {
+  const params = new URLSearchParams()
+  if (description) {
+    params.append('description', description)
+  }
+  if (start) {
+    params.append('after', getStartParam(start))
+  }
+  if (end) {
+    params.append('before', getEndParam(end))
+  }
+  return params
+}
+
 const instance = axios.create({
   baseURL: 'https://my-wallet-115120273090.southamerica-east1.run.app',
 })
@@ -34,16 +48,7 @@ function logout(token: string) {
 }
 
 function getTransactions(token: string, description?: string, start?: string, end?: string) {
-  const params = new URLSearchParams()
-  if (description) {
-    params.append('description', description)
-  }
-  if (start) {
-    params.append('after', getStartParam(start))
-  }
-  if (end) {
-    params.append('before', getEndParam(end))
-  }
+  const params = getParams(description, start, end)
 
   return instance.get<{ user: string; list: Transaction[] }>(`/transactions`, {
     ...createAuth(token),
@@ -67,8 +72,13 @@ function updateTransaction(token: string, id: string, updatedTransaction: NewTra
   return instance.put(`/transactions/${id}`, updatedTransaction, createAuth(token))
 }
 
-function eraseAll(token: string) {
-  return instance.delete(`/transactions/all`, createAuth(token))
+function eraseMany(token: string, description?: string, start?: string, end?: string) {
+  const params = getParams(description, start, end)
+
+  return instance.delete(`/transactions/many`, {
+    ...createAuth(token),
+    params,
+  })
 }
 
 const api = {
@@ -80,7 +90,7 @@ const api = {
   registerTransaction,
   deleteTransaction,
   updateTransaction,
-  eraseAll,
+  eraseMany,
 }
 
 export default api

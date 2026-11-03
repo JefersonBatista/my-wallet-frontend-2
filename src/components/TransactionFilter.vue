@@ -2,16 +2,19 @@
 import { computed, ref } from 'vue'
 import filterListIcon from '@/icons/filter-list.svg'
 
-const description = ref('')
-const start = ref('')
-const end = ref('')
-
-const { isFilterLoading, closeFilter } = defineProps<{
+const props = defineProps<{
+  description: string
+  start: string
+  end: string
   isFilterLoading: boolean
   closeFilter: () => void
 }>()
 
-const filterButtonText = computed(() => (isFilterLoading ? 'Filtrando...' : 'Filtrar'))
+const description = ref(props.description)
+const start = ref(props.start)
+const end = ref(props.end)
+
+const filterButtonText = computed(() => (props.isFilterLoading ? 'Filtrando...' : 'Filtrar'))
 
 const emit = defineEmits<{
   filter: [description: string, start: string, end: string]

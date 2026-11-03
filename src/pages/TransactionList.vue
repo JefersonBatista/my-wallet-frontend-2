@@ -18,6 +18,10 @@ const user = ref('')
 const transactions = ref<Transaction[]>([])
 const loading = ref(true)
 
+const description = ref('')
+const start = ref('')
+const end = ref('')
+
 const { token } = inject<Auth>('auth')!
 
 const balance = computed(() =>
@@ -66,25 +70,29 @@ const handleDelete = (id: string) => {
   transactions.value = transactions.value.filter((item) => item._id !== id)
 }
 
-// const eraseAll = async () => {
-//   if (!window.confirm('Tem certeza que quer apagar todas as transações?')) {
-//     return
-//   }
+const eraseMany = async () => {
+  if (!window.confirm('Tem certeza que quer apagar as transações filtradas?')) {
+    return
+  }
 
-//   try {
-//     await api.eraseAll(token.value)
-//     transactions.value = []
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   } catch (error: any) {
-//     alert(error.response.data)
-//   }
-// }
+  try {
+    await api.eraseMany(token.value, description.value, start.value, end.value)
+    transactions.value = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    alert(error.response.data)
+  }
+}
 
-const filterTransactions = async (description: string, start: string, end: string) => {
+const filterTransactions = async (newDescription: string, newStart: string, newEnd: string) => {
+  description.value = newDescription
+  start.value = newStart
+  end.value = newEnd
+
   isFilterLoading.value = true
 
   try {
-    const response = await api.getTransactions(token.value, description, start, end)
+    const response = await api.getTransactions(token.value, newDescription, newStart, newEnd)
     const newTransactions = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
     transactions.value = newTransactions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,6 +105,10 @@ const filterTransactions = async (description: string, start: string, end: strin
 }
 
 const clearFilter = async () => {
+  description.value = ''
+  start.value = ''
+  end.value = ''
+
   loading.value = true
 
   try {
@@ -194,19 +206,22 @@ const logout = async () => {
           saída
         </span>
       </button>
-      <!-- <button type="button" @click="eraseAll">
-        <img :src="eraserIcon" alt="apagar-tudo" />
+      <button type="button" @click="eraseMany">
+        <img :src="eraserIcon" alt="apagar-filtradas" />
         <span className="button-text">
           Apagar
           <br />
-          tudo
+          filtradas
         </span>
-      </button> -->
+      </button>
     </footer>
   </section>
 
   <TransactionFilter
     v-if="showFilterConfig"
+    :description="description"
+    :start="start"
+    :end="end"
     :isFilterLoading="isFilterLoading"
     :closeFilter="closeFilter"
     @filter="filterTransactions"

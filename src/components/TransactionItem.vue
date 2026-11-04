@@ -63,7 +63,8 @@ article {
 }
 
 .date {
-  margin-right: 10px;
+  margin-right: 5px;
+  font-size: 14px;
 
   color: #c6c6c6;
 }

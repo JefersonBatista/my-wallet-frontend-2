@@ -10,7 +10,8 @@ import { computed, inject, ref, watch } from 'vue'
 import type { Auth, Transaction } from '@/types/model'
 import api from '@/services/api'
 import { useRouter } from 'vue-router'
-import { formatBalance } from '@/utils/format'
+import { formatBalance, formatFilterDate } from '@/utils/format'
+import { thirtyDaysAgo } from '@/utils/date'
 
 const router = useRouter()
 
@@ -19,10 +20,27 @@ const transactions = ref<Transaction[]>([])
 const loading = ref(true)
 
 const description = ref('')
-const start = ref('')
+const start = ref(thirtyDaysAgo)
 const end = ref('')
 
 const { token } = inject<Auth>('auth')!
+
+const filterText = computed(() => {
+  const parts = []
+  if (description.value) {
+    parts.push(`filtrando por '${description.value}'`)
+  }
+  if (start.value) {
+    parts.push(`a partir de ${formatFilterDate(start.value)}`)
+  }
+  if (end.value) {
+    parts.push(`até ${formatFilterDate(end.value)}`)
+  }
+
+  let result = parts.join(', ')
+  result = result.charAt(0).toUpperCase() + result.slice(1)
+  return result
+})
 
 const balance = computed(() =>
   transactions.value
@@ -54,7 +72,12 @@ const isFilterLoading = ref(false)
 watch(
   token,
   async () => {
-    const response = await api.getTransactions(token.value)
+    const response = await api.getTransactions(
+      token.value,
+      description.value,
+      start.value,
+      end.value,
+    )
     user.value = response.data.user
     transactions.value = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
 
@@ -164,6 +187,10 @@ const logout = async () => {
         <span class="button-text">Limpar filtro</span>
         <img :src="eraserIcon" alt="limpar-filtro" />
       </button>
+    </div>
+
+    <div class="filter-text">
+      <span>{{ filterText }}</span>
     </div>
 
     <div class="container">
@@ -292,6 +319,13 @@ input::placeholder {
 
 .button-text {
   align-self: center;
+}
+
+.filter-text {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: white;
 }
 
 .container {

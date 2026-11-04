@@ -14,3 +14,5 @@ export const formatAmount = (amount: number): string =>
 
 export const formatTransactionDate = (timestamp: number): string =>
   dayjs(timestamp).format('DD/MM/YY')
+
+export const formatFilterDate = (date: string): string => dayjs(date).format('DD/MM/YYYY')

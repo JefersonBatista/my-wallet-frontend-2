@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import filterListIcon from '@/icons/filter-list.svg'
+import eraserIcon from '@/icons/eraser.svg'
+import calenderIcon from '@/icons/calendar.svg'
+import { thirtyDaysAgo } from '@/utils/date'
 
 const props = defineProps<{
   description: string
@@ -23,11 +26,32 @@ const emit = defineEmits<{
 const onSubmit = () => {
   emit('filter', description.value, start.value, end.value)
 }
+
+const clearFilter = () => {
+  description.value = ''
+  start.value = ''
+  end.value = ''
+}
+
+const lastThirtyDays = () => {
+  start.value = thirtyDaysAgo
+  end.value = ''
+}
 </script>
 
 <template>
   <div class="filter-background">
     <form class="filter-container" @submit.prevent="onSubmit">
+      <div class="filter">
+        <button type="button" @click="clearFilter">
+          <span class="button-text">Limpar filtro</span>
+          <img :src="eraserIcon" alt="limpar-filtro" />
+        </button>
+        <button type="button" @click="lastThirtyDays">
+          <span class="button-text">Últimos 30 dias</span>
+          <img :src="calenderIcon" alt="últimos-30-dias" />
+        </button>
+      </div>
       <input
         v-model="description"
         type="text"
@@ -52,6 +76,34 @@ const onSubmit = () => {
 </template>
 
 <style scoped>
+.filter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+
+  margin-bottom: 16px;
+}
+
+.filter button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  width: auto;
+  height: 25px;
+
+  font-size: 15px;
+}
+
+.filter img {
+  width: 20px;
+  height: 20px;
+  color: white;
+  align-self: center;
+  margin: 0 5px;
+}
+
 .filter-background {
   position: absolute;
   top: 50%;

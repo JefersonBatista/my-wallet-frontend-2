@@ -127,26 +127,6 @@ const filterTransactions = async (newDescription: string, newStart: string, newE
   }
 }
 
-const clearFilter = async () => {
-  description.value = ''
-  start.value = ''
-  end.value = ''
-
-  loading.value = true
-
-  try {
-    const response = await api.getTransactions(token.value)
-    const newTransactions = response.data.list.sort((t1, t2) => t2.timestamp - t1.timestamp)
-    transactions.value = newTransactions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    alert(error.response.data)
-  } finally {
-    closeFilter()
-    loading.value = false
-  }
-}
-
 const openFilter = () => {
   showFilterConfig.value = true
 }
@@ -182,10 +162,6 @@ const logout = async () => {
       <button type="button" @click="openFilter">
         <span class="button-text">Configurar filtro</span>
         <img :src="filterListIcon" alt="filtrar" />
-      </button>
-      <button type="button" @click="clearFilter">
-        <span class="button-text">Limpar filtro</span>
-        <img :src="eraserIcon" alt="limpar-filtro" />
       </button>
     </div>
 

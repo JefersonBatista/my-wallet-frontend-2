@@ -330,7 +330,7 @@ input::placeholder {
 
 .container {
   width: 100%;
-  height: calc(100dvh - 78px - 35px - 143px);
+  height: calc(100dvh - 78px - 35px - 143px - 65px);
   border-radius: 5px;
   padding: 23px 12px 12px;
   background-color: white;
